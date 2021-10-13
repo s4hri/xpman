@@ -2,9 +2,10 @@
 Experiment Manager
 
 
-# How to install
+# How to install it
 
-    git clone https://github.com/s4hri/xpman
-    echo "export PATH=${PWD}:${PATH}" >> ${HOME}/.bashrc
+    git clone https://github.com/s4hri/xpman ${PWD}
+    cd xpman
     chmod ugo+x xpman
+    printf "export PATH=${PATH}:${PWD}" >> ${HOME}/.bashrc
     source ${HOME}/.bashrc
