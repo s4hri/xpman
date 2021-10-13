@@ -1,7 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-export XP_SCRIPT_DIR=$SCRIPT_DIR
 export XP_TARGET_DIR=${PWD}
 
 make --makefile=${SCRIPT_DIR}/Makefile "$@"
