@@ -1,6 +1,24 @@
 #!/bin/bash
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-export XP_TARGET_DIR=${PWD}
+if [ $# -eq 0 ]
+  then
+    echo "
+    xpman: No arguments supplied
 
-make --makefile=${SCRIPT_DIR}/Makefile "$@"
+    Usage: xpman [CMD]
+
+    Requirements: The files docker-compose.yml, Dockerfile and .env in the current directory.
+
+    Command list:
+      clean  -
+      init   - Creates a docker container (X) based on the parameters in .env and the Dockerfile
+      build  - Creates a docker image (Y=X+d, d=OPENGL layer) suitable to be executed in the local machine based on the graphical card present
+      run    - Runs the docker container(s) based on the docker-compose.yml provided
+      distro - Pushes on dockerhub the docker container X"
+
+else
+  SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+  export XP_TARGET_DIR=${PWD}
+  export XP_SCRIPT_DIR=${SCRIPT_DIR}
+  make --makefile=${SCRIPT_DIR}/Makefile "$@"
+fi

@@ -19,7 +19,7 @@ ifeq (, $(shell which nvidia-smi))
 	LOCAL_DOCKER_IMAGE := ${PJT_DOCKER_IMAGE}-${USER}.${HN}
 else
 	NVIDIA_ENV := 1
-	NVIDIA_COMPOSE := -f ${XP_TARGET_DIR}/docker/docker-compose.nvidia.yml
+	NVIDIA_COMPOSE := -f ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml
 	LOCAL_DOCKER_IMAGE := ${PJT_DOCKER_IMAGE}-${USER}.${HN}-nvidia
 endif
 
@@ -105,12 +105,12 @@ clean: setup
 	    docker image rm ${LOCAL_DOCKER_IMAGE}; \
 	fi)
 
-	@(if [ -f ${XP_TARGET_DIR}/docker/docker-compose.base.yml ] ; then \
-	     rm ${XP_TARGET_DIR}/docker/docker-compose.base.yml; \
+	@(if [ -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ] ; then \
+	     rm ${XP_SCRIPT_DIR}/docker-compose.base.yml; \
 	fi)
 
-	@(if [ -f ${XP_TARGET_DIR}/docker/docker-compose.nvidia.yml ] ; then \
-	     rm ${XP_TARGET_DIR}/docker/docker-compose.nvidia.yml; \
+	@(if [ -f ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml ] ; then \
+	     rm ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml; \
 	fi)
 
 setup:
@@ -120,19 +120,17 @@ setup:
 
 init: setup
 	echo "Building project docker image ${PJT_DOCKER_IMAGE}"; \
-	docker build ${XP_TARGET_DIR}/docker -t ${PJT_DOCKER_IMAGE} --build-arg DOCKER_SRC=${DOCKER_SRC} ${BUILD_ARGS};
+	docker build ${XP_TARGET_DIR} -t ${PJT_DOCKER_IMAGE} --build-arg DOCKER_SRC=${DOCKER_SRC} ${BUILD_ARGS};
 
 
 build: init
 ifeq ($(shell docker images --format "{{.Repository}}:{{.Tag}}" | grep "${LOCAL_DOCKER_IMAGE}"),)
 	@echo "Building local docker image ${LOCAL_DOCKER_IMAGE}"; \
-	docker build https://github.com/s4hri/docker-husk.git \
+	docker build ${XP_SCRIPT_DIR} \
 			-t ${LOCAL_DOCKER_IMAGE} \
 			--build-arg DOCKER_SRC=${PJT_DOCKER_IMAGE} \
 			--build-arg LOCAL_USER_ID=${LOCAL_USER_ID} \
-			--build-arg NVIDIA_ENV=${NVIDIA_ENV}; \
-	wget 'https://raw.githubusercontent.com/s4hri/docker-husk/master/docker-compose.base.yml' -P ${XP_TARGET_DIR}/docker; \
-	wget 'https://raw.githubusercontent.com/s4hri/docker-husk/master/docker-compose.nvidia.yml' -P ${XP_TARGET_DIR}/docker;
+			--build-arg NVIDIA_ENV=${NVIDIA_ENV};
 endif
 
 
@@ -142,8 +140,8 @@ ifneq (, ${XRANDR_CONF})
 	$(shell ${XRANDR_CONF})
 endif
 	@echo "Running docker image ${LOCAL_DOCKER_IMAGE}"
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_TARGET_DIR}/docker/docker-compose.base.yml ${NVIDIA_COMPOSE} up --remove-orphans
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_TARGET_DIR}/docker/docker-compose.base.yml ${NVIDIA_COMPOSE} down
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ${NVIDIA_COMPOSE} up --remove-orphans
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ${NVIDIA_COMPOSE} down
 
 distro: build
 	@echo "Pushing docker image ${PJT_DOCKER_IMAGE} on dockerhub"
