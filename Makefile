@@ -105,14 +105,6 @@ clean: setup
 	    docker image rm ${LOCAL_DOCKER_IMAGE}; \
 	fi)
 
-	@(if [ -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ] ; then \
-	     rm ${XP_SCRIPT_DIR}/docker-compose.base.yml; \
-	fi)
-
-	@(if [ -f ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml ] ; then \
-	     rm ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml; \
-	fi)
-
 setup:
 	@echo "Checking requirements ..."
 	$(call install_reqs)
