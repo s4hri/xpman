@@ -90,6 +90,8 @@ define install_reqs
 	@echo "All Docker requirements are satisfied!"
 endef
 
+.PHONY : distro run build init setup clean all
+
 all: clean init build run
 
 clean: setup
@@ -112,18 +114,17 @@ setup:
 
 init: setup
 	echo "Building project docker image ${PJT_DOCKER_IMAGE}"; \
+	docker build ${XP_TARGET_DIR} -t ${PJT_DOCKER_IMAGE} --build-arg DOCKER_SRC=${DOCKER_SRC} ${BUILD_ARGS} --no-cache;
+
+
+build:
+	echo "Building local docker image ${LOCAL_DOCKER_IMAGE}, LOCAL_UID: ${LOCAL_USER_ID}";
 	docker build ${XP_TARGET_DIR} -t ${PJT_DOCKER_IMAGE} --build-arg DOCKER_SRC=${DOCKER_SRC} ${BUILD_ARGS};
-
-
-build: init
-ifeq ($(shell docker images --format "{{.Repository}}:{{.Tag}}" | grep "${LOCAL_DOCKER_IMAGE}"),)
-	@echo "Building local docker image ${LOCAL_DOCKER_IMAGE}"; \
 	docker build ${XP_SCRIPT_DIR} \
 			-t ${LOCAL_DOCKER_IMAGE} \
 			--build-arg DOCKER_SRC=${PJT_DOCKER_IMAGE} \
 			--build-arg LOCAL_USER_ID=${LOCAL_USER_ID} \
 			--build-arg NVIDIA_ENV=${NVIDIA_ENV};
-endif
 
 
 run: build

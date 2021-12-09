@@ -26,4 +26,5 @@ RUN if [ "$NVIDIA_ENV" = 1 ] ; then apt-get update && apt-get install -y --no-in
       pkg-config libglvnd-dev libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev ; fi
 
 RUN usermod -u ${LOCAL_USER_ID} docky
+RUN usermod -a -G root,sudo,audio,video docky
 USER docky
