@@ -1,5 +1,12 @@
 LOCAL_USER_ID := $(shell id -u)
+GROUP_AUDIO := $(shell getent group audio | cut -d: -f3)
+GROUP_VIDEO := $(shell getent group video | cut -d: -f3)
+GROUP_INPUT := $(shell getent group input | cut -d: -f3)
+
 export LOCAL_USER_ID
+export GROUP_AUDIO
+export GROUP_VIDEO
+export GROUP_INPUT
 
 include ${XP_TARGET_DIR}/.env
 
@@ -118,13 +125,16 @@ init: setup
 
 
 build:
-	echo "Building local docker image ${LOCAL_DOCKER_IMAGE}, LOCAL_UID: ${LOCAL_USER_ID}";
+	echo "Building local docker image ${LOCAL_DOCKER_IMAGE}, LOCAL_UID: ${LOCAL_USER_ID}, NVIDIA_ENV: ${NVIDIA_ENV}, GROUP_AUDIO: ${GROUP_AUDIO}, GROUP_VIDEO: ${GROUP_VIDEO}, GROUP_INPUT: ${GROUP_INPUT}";
 	docker build ${XP_TARGET_DIR} -t ${PJT_DOCKER_IMAGE} --build-arg DOCKER_SRC=${DOCKER_SRC} ${BUILD_ARGS};
 	docker build ${XP_SCRIPT_DIR} \
 			-t ${LOCAL_DOCKER_IMAGE} \
 			--build-arg DOCKER_SRC=${PJT_DOCKER_IMAGE} \
 			--build-arg LOCAL_USER_ID=${LOCAL_USER_ID} \
-			--build-arg NVIDIA_ENV=${NVIDIA_ENV};
+			--build-arg NVIDIA_ENV=${NVIDIA_ENV} \
+			--build-arg GROUP_AUDIO=${GROUP_AUDIO} \
+			--build-arg GROUP_VIDEO=${GROUP_VIDEO} \
+			--build-arg GROUP_INPUT=${GROUP_INPUT};
 
 
 run: build
@@ -133,8 +143,8 @@ ifneq (, ${XRANDR_CONF})
 	$(shell ${XRANDR_CONF})
 endif
 	@echo "Running docker image ${LOCAL_DOCKER_IMAGE}"
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ${NVIDIA_COMPOSE} up --remove-orphans
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml -f ${XP_SCRIPT_DIR}/docker-compose.base.yml ${NVIDIA_COMPOSE} down
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml ${NVIDIA_COMPOSE} up --remove-orphans
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml ${NVIDIA_COMPOSE} down
 
 distro: build
 	@echo "Pushing docker image ${PJT_DOCKER_IMAGE} on dockerhub"

@@ -7,11 +7,17 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ARG LOCAL_USER_ID
 ARG NVIDIA_ENV=0
+ARG GROUP_AUDIO
+ARG GROUP_VIDEO
+ARG GROUP_INPUT
 
 USER root
 
 ENV LOCAL_USER_ID=${LOCAL_USER_ID}
 ENV NVIDIA_ENV=${NVIDIA_ENV}
+ENV GROUP_INPUT=${GROUP_INPUT}
+ENV GROUP_VIDEO=${GROUP_VIDEO}
+ENV GROUP_AUDIO=${GROUP_AUDIO}
 
 RUN if [ "$NVIDIA_ENV" = 1 ] ; then apt-get update && apt-get install -y --no-install-recommends \
       libxau6 libxdmcp6 libxcb1 libxext6 libx11-6 && \
@@ -26,5 +32,5 @@ RUN if [ "$NVIDIA_ENV" = 1 ] ; then apt-get update && apt-get install -y --no-in
       pkg-config libglvnd-dev libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev ; fi
 
 RUN usermod -u ${LOCAL_USER_ID} docky
-RUN usermod -a -G root,sudo,audio,video docky
+RUN usermod -a -G root,sudo,${GROUP_AUDIO},${GROUP_VIDEO},${GROUP_INPUT} docky
 USER docky

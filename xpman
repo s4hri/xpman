@@ -9,6 +9,12 @@ if [ $# -eq 0 ]
 
     Requirements: The files docker-compose.yml, Dockerfile and .env in the current directory.
 
+    In the .env file you need to declare the following vars:
+       - PROJECT_NAME: the name of the docker image
+       - DOCKER_SRC: source docker image
+       - RELEASE_TAG: a tag name useful for dockerhub
+       - BUILD_ARGS: any additional arguments for the docker build process (empty if none)
+
     Command list:
       clean  -
       init   - Creates a docker container (X) based on the parameters in .env and the Dockerfile

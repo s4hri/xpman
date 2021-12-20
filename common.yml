@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
 
-  main:
-    image: ${LOCAL_DOCKER_IMAGE}
-
+  base:
     environment:
         - DISPLAY=${DISPLAY}
         - QT_X11_NO_MITSHM=1
@@ -33,9 +31,3 @@ services:
       - type: bind
         source: ${XDG_RUNTIME_DIR}/dconf
         target: ${XDG_RUNTIME_DIR}/dconf
-
-      - type: bind
-        source: ./workdir
-        target: /home/docky/workdir
-
-    container_name: ${CONTAINER_NAME}
