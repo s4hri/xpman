@@ -143,8 +143,9 @@ ifneq (, ${XRANDR_CONF})
 	$(shell ${XRANDR_CONF})
 endif
 	@echo "Running docker image ${LOCAL_DOCKER_IMAGE}"
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml ${NVIDIA_COMPOSE} up --remove-orphans
-	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml ${NVIDIA_COMPOSE} down
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml down --remove-orphans
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml up --remove-orphans
+	docker-compose -f ${XP_TARGET_DIR}/docker-compose.yml down --remove-orphans
 
 distro: build
 	@echo "Pushing docker image ${PJT_DOCKER_IMAGE} on dockerhub"
