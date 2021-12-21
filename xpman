@@ -20,7 +20,9 @@ if [ $# -eq 0 ]
       init   - Creates a docker container (X) based on the parameters in .env and the Dockerfile
       build  - Creates a docker image (Y=X+d, d=OPENGL layer) suitable to be executed in the local machine based on the graphical card present
       run    - Runs the docker container(s) based on the docker-compose.yml provided
-      distro - Pushes on dockerhub the docker container X"
+      all    - Combines the following targets: clean+init+build+run
+      distro - Pushes on dockerhub the docker container X
+      exec   - Exec a generic command on a running service (i.e. xpman exec command=bash service=main)"
 
 else
   SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

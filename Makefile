@@ -151,3 +151,7 @@ distro: build
 	docker push ${PJT_DOCKER_IMAGE}
 	docker tag ${PJT_DOCKER_IMAGE} iitschri/${PROJECT_NAME}-docker:latest
 	docker push iitschri/${PROJECT_NAME}-docker:latest
+
+exec:
+	@echo "Executing command <$(command)> in the docker container running the service <$(service)> ${XP_TARGET_DIR}"
+	docker-compose exec $(service) $(command)
