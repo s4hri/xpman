@@ -26,7 +26,7 @@ ifeq (, $(shell which nvidia-smi))
 	LOCAL_DOCKER_IMAGE := ${PJT_DOCKER_IMAGE}-${USER}.${HN}
 else
 	NVIDIA_ENV := 1
-	NVIDIA_COMPOSE := -f ${XP_SCRIPT_DIR}/docker-compose.nvidia.yml
+	NVIDIA_COMPOSE := -f ${XP_SCRIPT_DIR}/nvidia-conf.yml
 	LOCAL_DOCKER_IMAGE := ${PJT_DOCKER_IMAGE}-${USER}.${HN}-nvidia
 endif
 
